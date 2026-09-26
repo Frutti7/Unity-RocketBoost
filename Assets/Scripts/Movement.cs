@@ -39,9 +39,9 @@ public class Movement : MonoBehaviour {
         float rotationInput = rotation.ReadValue<float>();
         
         if (rotationInput > 0) {
-            ApplyRotation(rotationStrength);
-        } else if (rotationInput < 0) {
             ApplyRotation(-rotationStrength);
+        } else if (rotationInput < 0) {
+            ApplyRotation(rotationStrength);
         }
         
         /* Using Quaternion for rotation
