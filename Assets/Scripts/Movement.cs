@@ -52,6 +52,9 @@ public class Movement : MonoBehaviour {
     }
 
     private void ApplyRotation(float rotationStrength) {
-        transform.Rotate(0, 0, 1f * rotationStrength * Time.fixedDeltaTime);
+        rb.freezeRotation = true;
+        Quaternion newRotation = rb.rotation * Quaternion.Euler(0f, 0f, rotationStrength * Time.fixedDeltaTime);
+        rb.MoveRotation(newRotation);
+        rb.freezeRotation = false;
     }
 }
