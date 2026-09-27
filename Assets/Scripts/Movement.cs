@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Movement : MonoBehaviour {
+    public static Movement Instance {get; private set;}
     [SerializeField] private InputAction thrust;
     [SerializeField] private InputAction rotation;
     Rigidbody rb;
@@ -11,6 +12,12 @@ public class Movement : MonoBehaviour {
     [SerializeField] Vector3 vRotationStrength;
     [SerializeField] float rotationStrength = 100f;
 
+    public event EventHandler OnThrust;
+
+    private void Awake() {
+        Instance = this;
+    }
+    
     private void Start() {
         rb = GetComponent<Rigidbody>();
         rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY;
@@ -30,6 +37,9 @@ public class Movement : MonoBehaviour {
 
     private void ProcessThrust() {
         if (thrust.IsPressed()) {
+            Debug.Log("Reaching Thrust is pressed");
+            Debug.Log(OnThrust == null);
+            OnThrust?.Invoke(this, EventArgs.Empty);
             rb.AddRelativeForce(Vector3.up * thrustStrength * Time.fixedDeltaTime);
         }
     }
