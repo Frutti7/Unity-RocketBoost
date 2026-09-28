@@ -36,9 +36,7 @@ public class Movement : MonoBehaviour {
     }
 
     private void ProcessThrust() {
-        if (thrust.IsPressed()) {
-            Debug.Log("Reaching Thrust is pressed");
-            Debug.Log(OnThrust == null);
+        if (thrust.IsPressed() && PlayerStates.CanUseEnergy()) {
             OnThrust?.Invoke(this, EventArgs.Empty);
             rb.AddRelativeForce(Vector3.up * thrustStrength * Time.fixedDeltaTime);
         }
