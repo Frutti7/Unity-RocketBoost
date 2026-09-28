@@ -4,26 +4,41 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Movement : MonoBehaviour {
-    public static Movement Instance {get; private set;}
+    public static Movement Instance { get; private set; }
+
+    [SerializeField] float rotationStrength = 100f;
+    [SerializeField] float thrustStrength = 10f;
     [SerializeField] private InputAction thrust;
     [SerializeField] private InputAction rotation;
+
     Rigidbody rb;
-    [SerializeField] float thrustStrength = 10f;
+
     [SerializeField] Vector3 vRotationStrength;
-    [SerializeField] float rotationStrength = 100f;
 
     public event EventHandler OnThrust;
 
     private void Awake() {
         Instance = this;
     }
-    
+
     private void Start() {
         rb = GetComponent<Rigidbody>();
-        rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY;
+        rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX |
+                         RigidbodyConstraints.FreezeRotationY;
         vRotationStrength = new Vector3(0, 0, 100);
         CollisionHandler.Instance.onCollisionCrash += CollisionHandlerCollisionCrash;
         CollisionHandler.Instance.onCollisionFinish += CollisionHandler_onCollisionFinish;
+    }
+
+    private void OnEnable() {
+        thrust.Enable();
+        rotation.Enable();
+    }
+
+    private void FixedUpdate() {
+        //rb.transform.position = new Vector3(rb.transform.position.x, rb.transform.position.y, 0);
+        ProcessThrust();
+        ProcessRotation();
     }
 
     private void CollisionHandler_onCollisionFinish(object sender, EventArgs e) {
@@ -39,17 +54,6 @@ public class Movement : MonoBehaviour {
         rotation.Disable();
     }
 
-    private void OnEnable() {
-        thrust.Enable();
-        rotation.Enable();
-    }
-
-    private void FixedUpdate() {
-        //rb.transform.position = new Vector3(rb.transform.position.x, rb.transform.position.y, 0);
-        ProcessThrust();
-        ProcessRotation();
-    }
-
     private void ProcessThrust() {
         if (thrust.IsPressed() && PlayerStates.CanUseEnergy()) {
             OnThrust?.Invoke(this, EventArgs.Empty);
@@ -58,15 +62,14 @@ public class Movement : MonoBehaviour {
     }
     
     private void ProcessRotation() {
-        
         float rotationInput = rotation.ReadValue<float>();
-        
+
         if (rotationInput > 0) {
             ApplyRotation(-rotationStrength);
         } else if (rotationInput < 0) {
             ApplyRotation(rotationStrength);
         }
-        
+
         /* Using Quaternion for rotation
         Quaternion deltaRotation = Quaternion.Euler(vRotationStrength * -rotationInput * Time.fixedDeltaTime);
         rb.MoveRotation(rb.rotation * deltaRotation);

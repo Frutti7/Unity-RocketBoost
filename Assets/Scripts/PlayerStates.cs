@@ -3,23 +3,24 @@ using UnityEngine;
 
 public class PlayerStates : MonoBehaviour {
     public static PlayerStates Instance { get; private set; }
-    public event EventHandler<ThrustStateChangedEventArs> OnThrustStateChanged;
-    public event EventHandler<EnergyConsumptionEventArgs> OnEnergyChanged;
+
+    private float maxEnergy = 100f;
     private bool isThrustingNow = false;
     private float thrustTimer = 0f;
     private float thrustTimerMax = 0.3f;
 
     public static float energy;
-    private float maxEnergy = 100f;
-
     FuelBonus[] fuelBonuses;
+    private ThrustState currentState = ThrustState.Idle;
 
     public enum ThrustState {
         Idle,
         Thrusting,
     }
 
-    private ThrustState currentState = ThrustState.Idle;
+    public event EventHandler<ThrustStateChangedEventArs> OnThrustStateChanged;
+    public event EventHandler<EnergyConsumptionEventArgs> OnEnergyChanged;
+
 
     private void Awake() {
         Instance = this;
@@ -31,6 +32,23 @@ public class PlayerStates : MonoBehaviour {
         //FuelBonus.Instance.OnFuelBonus += FuelBonus_OnFuelBonus;
         energy = 50;
         OnEnergyChanged?.Invoke(this, new EnergyConsumptionEventArgs { EnergyPercentage = energy / maxEnergy });
+    }
+
+    private void Update() {
+        HandleThrustState();
+    }
+
+    public static bool CanUseEnergy() {
+        return energy > 0;
+    }
+
+    public class ThrustStateChangedEventArs : EventArgs {
+        public bool IsIdle { get; set; }
+        public bool IsThrusting { get; set; }
+    }
+
+    public class EnergyConsumptionEventArgs : EventArgs {
+        public float EnergyPercentage { get; set; }
     }
 
     private void FuelBonus_OnFuelBonus(object sender, FuelBonus.BonusEventArgs e) {
@@ -49,10 +67,6 @@ public class PlayerStates : MonoBehaviour {
     private void Movement_OnThrust(object sender, EventArgs e) {
         isThrustingNow = true;
         HandleEnergyConsumption();
-    }
-
-    private void Update() {
-        HandleThrustState();
     }
 
     private void HandleThrustState() {
@@ -78,24 +92,12 @@ public class PlayerStates : MonoBehaviour {
         isThrustingNow = false;
     }
 
-    public class ThrustStateChangedEventArs : EventArgs {
-        public bool IsIdle { get; set; }
-        public bool IsThrusting { get; set; }
-    }
-
-    public class EnergyConsumptionEventArgs : EventArgs {
-        public float EnergyPercentage { get; set; }
-    }
-
 
     private void HandleEnergyConsumption() {
         energy -= 20 * Time.deltaTime;
         OnEnergyChanged?.Invoke(this, new EnergyConsumptionEventArgs { EnergyPercentage = energy / maxEnergy });
     }
 
-    public static bool CanUseEnergy() {
-        return energy > 0;
-    }
 
     private void FindFuelBonus() {
         fuelBonuses = FindObjectsOfType<FuelBonus>();

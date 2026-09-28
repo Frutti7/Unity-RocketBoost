@@ -1,11 +1,14 @@
 using System;
 using UnityEngine;
 
-public class FuelBonus : MonoBehaviour
-{
-    [SerializeField] private float bonus = 10f;   
+public class FuelBonus : MonoBehaviour {
+    [SerializeField] private float bonus = 10f;
     public event EventHandler<BonusEventArgs> OnFuelBonus;
-    
+
+    public class BonusEventArgs : EventArgs {
+        public float Bonus { get; set; }
+    }
+
     private void Start() {
         CollisionHandler.Instance.onFuelCollected += HandlerOnFuelCollected;
     }
@@ -14,11 +17,8 @@ public class FuelBonus : MonoBehaviour
         if (e.gameObject != gameObject) {
             return;
         }
-        gameObject.SetActive(false);
-        OnFuelBonus?.Invoke(this, new BonusEventArgs{Bonus = bonus});
-    }
 
-    public class BonusEventArgs : EventArgs {
-        public float Bonus { get; set; }
+        gameObject.SetActive(false);
+        OnFuelBonus?.Invoke(this, new BonusEventArgs { Bonus = bonus });
     }
 }
