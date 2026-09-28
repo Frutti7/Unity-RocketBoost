@@ -22,6 +22,21 @@ public class Movement : MonoBehaviour {
         rb = GetComponent<Rigidbody>();
         rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY;
         vRotationStrength = new Vector3(0, 0, 100);
+        CollisionHandler.Instance.onCollisionCrash += CollisionHandlerCollisionCrash;
+        CollisionHandler.Instance.onCollisionFinish += CollisionHandler_onCollisionFinish;
+    }
+
+    private void CollisionHandler_onCollisionFinish(object sender, EventArgs e) {
+        DisableMovement();
+    }
+
+    private void CollisionHandlerCollisionCrash(object sender, EventArgs e) {
+        DisableMovement();
+    }
+
+    private void DisableMovement() {
+        thrust.Disable();
+        rotation.Disable();
     }
 
     private void OnEnable() {

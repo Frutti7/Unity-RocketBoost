@@ -8,6 +8,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Over.unity
     guid: 2459438cd5884db49bd99d6ae5c5ec5e
+  - enabled: 1
+    path: Assets/Scenes/Under.unity
+    guid: eba17df3cfd469145af1de818ce4c972
+  - enabled: 1
+    path: Assets/Scenes/Through.unity
+    guid: 5f7fb0ee18c813a498d7078f40ae9c46
+  - enabled: 1
+    path: Assets/Scenes/Wall.unity
+    guid: 5ffade5f708599041b29e79c04c53c9f
+  - enabled: 1
+    path: Assets/Scenes/Walll-BurstThrough.unity
+    guid: 49853addcaec52c4081c0cf43282a7ff
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

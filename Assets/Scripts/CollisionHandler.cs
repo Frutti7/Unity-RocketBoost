@@ -3,11 +3,14 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class CollisionHandler : MonoBehaviour {
+
+    [SerializeField] private float collisionCrashDelay = 2f;
+    [SerializeField] private float finishDelay = 1f;
     public static CollisionHandler Instance { get; private set; }
 
-    public event EventHandler<CollisionObjectEventArgs> onCollisionDestroy;
+    public event EventHandler onCollisionCrash;
     public event EventHandler<CollisionObjectEventArgs> onCollisionFriendly;
-    public event EventHandler<CollisionObjectEventArgs> onCollisionFinish;
+    public event EventHandler onCollisionFinish;
     public event EventHandler<CollisionObjectEventArgs> onFuelCollected;
 
     private void Awake() {
@@ -19,12 +22,24 @@ public class CollisionHandler : MonoBehaviour {
             case "Friendly":
                 break;
             case "Finish":
-                LoadNextLevel();
+                StartSuccessSequence();
                 break;
             default:
-                ReloadLevel();
+                StartCrashSequence();
                 break;
         }
+    }
+
+    private void StartSuccessSequence() {
+        // TODO: Play success animation
+        onCollisionFinish?.Invoke(this, EventArgs.Empty);
+        Invoke("LoadNextLevel", finishDelay);
+    }
+
+    private void StartCrashSequence() {
+        // TODO: Play crash animation
+        onCollisionCrash?.Invoke(this, EventArgs.Empty);
+        Invoke("ReloadLevel", collisionCrashDelay);
     }
 
     private void OnTriggerEnter(Collider other) {
@@ -45,6 +60,7 @@ public class CollisionHandler : MonoBehaviour {
     }
 
     private void LoadNextLevel() {
+        
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         
         int nextScene = currentSceneIndex + 1;
