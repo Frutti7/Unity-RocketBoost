@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerSound : MonoBehaviour
 {
    private AudioSource audioSource;
+   [SerializeField] AudioClip mainEngine;
    
    private void Awake() {
       audioSource = GetComponent<AudioSource>();
@@ -15,7 +16,7 @@ public class PlayerSound : MonoBehaviour
 
    private void PlayerStates_OnThrustStateChanged(object sender, PlayerStates.ThrustStateChangedEventArs e) {
       if (e.IsThrusting) {
-         audioSource.Play();
+         audioSource.PlayOneShot(mainEngine);
       } else if (e.IsIdle) {
          audioSource.Stop();
       }
