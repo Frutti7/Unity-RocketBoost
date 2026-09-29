@@ -121,4 +121,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0d825dcb8a7ab84d9c807bfb6cef8f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bonus: 28.99
+  bonus: 30
