@@ -4,9 +4,11 @@ using UnityEngine.SceneManagement;
 
 public class CollisionHandler : MonoBehaviour {
     public static CollisionHandler Instance { get; private set; }
+    private bool isContollable = true;
     
     [SerializeField] private float collisionCrashDelay = 2f;
     [SerializeField] private float finishDelay = 1f;
+    
     
     public event EventHandler onCollisionCrash;
     public event EventHandler<CollisionObjectEventArgs> onCollisionFriendly;
@@ -18,6 +20,10 @@ public class CollisionHandler : MonoBehaviour {
     }
 
     private void OnCollisionEnter(Collision collision) {
+        if(!isContollable) {
+            return;
+        }
+        
         switch (collision.gameObject.tag) {
             case "Friendly":
                 break;
@@ -44,12 +50,14 @@ public class CollisionHandler : MonoBehaviour {
 
     private void StartSuccessSequence() {
         // TODO: Play success animation
+        isContollable = false;
         onCollisionFinish?.Invoke(this, EventArgs.Empty);
         Invoke("LoadNextLevel", finishDelay);
     }
 
     private void StartCrashSequence() {
         // TODO: Play crash animation
+        isContollable = false;
         onCollisionCrash?.Invoke(this, EventArgs.Empty);
         Invoke("ReloadLevel", collisionCrashDelay);
     }

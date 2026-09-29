@@ -39,6 +39,7 @@ public class Movement : MonoBehaviour {
         //rb.transform.position = new Vector3(rb.transform.position.x, rb.transform.position.y, 0);
         ProcessThrust();
         ProcessRotation();
+        
     }
 
     private void CollisionHandler_onCollisionFinish(object sender, EventArgs e) {
