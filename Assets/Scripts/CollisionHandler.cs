@@ -8,6 +8,8 @@ public class CollisionHandler : MonoBehaviour {
     
     [SerializeField] private float collisionCrashDelay = 2f;
     [SerializeField] private float finishDelay = 1f;
+    [SerializeField] private ParticleSystem successParticles;
+    [SerializeField] private ParticleSystem[] crashParticles;
     
     
     public event EventHandler onCollisionCrash;
@@ -49,14 +51,16 @@ public class CollisionHandler : MonoBehaviour {
     }
 
     private void StartSuccessSequence() {
-        // TODO: Play success animation
+        successParticles.Play();
         isContollable = false;
         onCollisionFinish?.Invoke(this, EventArgs.Empty);
         Invoke("LoadNextLevel", finishDelay);
     }
 
     private void StartCrashSequence() {
-        // TODO: Play crash animation
+        foreach (var particle in crashParticles) {
+            particle.Play();
+        }
         isContollable = false;
         onCollisionCrash?.Invoke(this, EventArgs.Empty);
         Invoke("ReloadLevel", collisionCrashDelay);
